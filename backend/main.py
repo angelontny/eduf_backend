@@ -1,7 +1,7 @@
-from fastapi import Depends, FastAPI
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi import Security, FastAPI
+from auth0.utils import VerifyToken
 
-token_auth_scheme = HTTPBearer()
+auth = VerifyToken()
 app = FastAPI()
 
 @app.get("/api/public")
@@ -14,9 +14,9 @@ def public():
     return result
 
 @app.get("/api/private")
-def private(token: HTTPAuthorizationCredentials = Depends(token_auth_scheme)):
+def private(auth_string: str = Security(auth.verify)):
     """A valid access token is required to access this route"""
 
-    result = token.credentials
+    result = auth_string
 
     return result
