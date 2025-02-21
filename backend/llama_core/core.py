@@ -53,7 +53,7 @@ def ingest(path: str):
     )
     index.storage_context.persist(persist_dir=persist_dir)
 
-def query(path: str):
+def query(path: str, question: str):
     # Read from previously stored index
     persist_dir = Path(path) / "index"
 
@@ -63,9 +63,7 @@ def query(path: str):
     # load index
     index = load_index_from_storage(storage_context)
     query_engine = index.as_query_engine()
-    response = query_engine.query(
-            "Give me a summary of the given information"
-    )
+    response = query_engine.query(question)
     return response
 
 def generate_cards(path: str):

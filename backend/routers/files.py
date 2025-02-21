@@ -91,3 +91,11 @@ def fetch_cards(chat_id: str, db: Session = Depends(get_db), security: dict[str,
     user_id = security["sub"].split("@")[0]
     cards = db.query(Flash).filter(Flash.chat_id == chat_id and Flash.user_id == user_id).all()
     return cards
+
+@router.get("/query/{chat_id}/")
+def query_files(chat_id: str, q: str, db: Session = Depends(get_db), security: dict[str, str] = Security(auth.verify)):
+    ## BIG PROBLEM RIGHT HERE
+    user_id = security["sub"].split("@")[0]
+    user_dir = Path(UPLOAD_DIR) / user_id / str(chat_id) 
+    files_dir = user_dir / "files"
+    return str(query(str(files_dir), q))
