@@ -5,10 +5,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Settings(BaseSettings):
-    auth0_domain: str
-    auth0_api_audience: str
-    auth0_issuer: str
-    auth0_algorithms: str
+    hugging_face_token: str
+    cohere_key: str
     class Config:
         env_file = ".env"
 
