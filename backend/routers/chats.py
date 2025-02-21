@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Security, Depends, HTTPException
 from auth0.utils import VerifyToken
-from sqlalchemy import Column, Integer, String, DateTime, create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base, Session
-from datetime import datetime
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, Session
+from models.model import Chat, Flash, Base
 
 router = APIRouter(prefix="/chats", tags=["Chats"])
 auth = VerifyToken()
@@ -12,16 +12,6 @@ DATABASE_URL = "sqlite:///./chats.db"
 # Initialize Database
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
-
-# Chat Model
-class Chat(Base):
-    __tablename__ = "chats"
-
-    chat_id = Column(Integer, primary_key=True, index=True)
-    chat_name = Column(String, nullable=False)
-    owner_id = Column(String, index=True)  # Auth0 user ID
-    created_at = Column(DateTime, default=datetime.now)
 
 # Create Tables
 Base.metadata.create_all(bind=engine)
@@ -47,4 +37,6 @@ def create_chat(chat_name: str, db: Session = Depends(get_db), security: dict[st
 @router.get("")
 def get_chats(db: Session = Depends(get_db), security: dict[str, str] = Security(auth.verify)):
     chats = db.query(Chat).filter(Chat.owner_id == security["sub"].split("@")[0]).all()
+    if len(chats) == 0:
+        raise HTTPException(status_code=404, detail="Not Found")
     return chats
