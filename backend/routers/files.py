@@ -3,10 +3,10 @@ from auth0.utils import VerifyToken
 from fastapi.responses import FileResponse
 import os
 from pathlib import Path
-from llama_core.core import generate_cards, ingest, query
+from llama_core.core import generate_cards, ingest 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
-from models.model import Flash, Base
+from models.model import Flash, Base 
 
 auth = VerifyToken()
 
@@ -31,7 +31,6 @@ def get_db():
         yield db
     finally:
         db.close()
-
 router = APIRouter(prefix="/file", tags=["File"])
 
 @router.post("/upload/{chat_id}")
@@ -41,6 +40,7 @@ async def upload_file(chat_id: int, files: list[UploadFile] = File(...), db: Ses
     user_dir = Path(UPLOAD_DIR) / user_id / str(chat_id)
     files_dir = user_dir / "files"
 
+    user_dir.mkdir(parents=True, exist_ok=True)
     files_dir.mkdir(parents=True, exist_ok=True)
     
     file_data = dict()
@@ -53,9 +53,9 @@ async def upload_file(chat_id: int, files: list[UploadFile] = File(...), db: Ses
 
     ## Generate flash cards
     ingest(str(user_dir))
-    flash_card_string_list = generate_cards(str(files_dir))
+    flash_cards = generate_cards(str(user_dir))
 
-    for i in flash_card_string_list:
+    for i in flash_cards:
         card = Flash(user_id=user_id, chat_id=chat_id, topic_name=i[0], question=i[1], answer=i[2])
         db.add(card)
         db.commit()
@@ -76,26 +76,11 @@ def get_files(chat_id: int, security: dict[str, str] = Security(auth.verify)):
     return files
 
 @router.get("/fetch_file/{chat_id}/{file_name}")
-def fetch_file(chat_id: str, file_name: str, security: dict[str, str] = Security(auth.verify)):
+def fetch_file(chat_id: int, file_name: str, security: dict[str, str] = Security(auth.verify)):
     user_id = security["sub"].split("@")[0]
-    file_path = Path(UPLOAD_DIR) / user_id / chat_id / "files" / file_name
+    file_path = Path(UPLOAD_DIR) / user_id / str(chat_id) / "files" / file_name
 
     if not file_path.exists():
         raise HTTPException(status_code=404, detail="File not found")
 
     return FileResponse(file_path)
-
-@router.get("/get_cards/{chat_id}")
-def fetch_cards(chat_id: str, db: Session = Depends(get_db), security: dict[str, str] = Security(auth.verify)):
-    ## BIG PROBLEM RIGHT HERE
-    user_id = security["sub"].split("@")[0]
-    cards = db.query(Flash).filter(Flash.chat_id == chat_id and Flash.user_id == user_id).all()
-    return cards
-
-@router.get("/query/{chat_id}/")
-def query_files(chat_id: str, q: str, db: Session = Depends(get_db), security: dict[str, str] = Security(auth.verify)):
-    ## BIG PROBLEM RIGHT HERE
-    user_id = security["sub"].split("@")[0]
-    user_dir = Path(UPLOAD_DIR) / user_id / str(chat_id) 
-    files_dir = user_dir / "files"
-    return str(query(str(files_dir), q))

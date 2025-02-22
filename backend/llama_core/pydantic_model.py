@@ -1,3 +1,4 @@
+# Unused, structured outputs in cohere requires tool usage
 from pydantic import BaseModel, Field
 
 class Flash(BaseModel):
