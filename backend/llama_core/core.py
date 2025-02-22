@@ -93,5 +93,37 @@ def generate_cards(path: str):
 
     return flash_card_list
 
-# ingest("/home/angelo/dev/eduf_backend/backend/uploads/Y5nBZWGBJM5Iayvoy879TZ7AKhmHEQd6/1")
-# print(generate_cards("/home/angelo/dev/eduf_backend/backend/uploads/Y5nBZWGBJM5Iayvoy879TZ7AKhmHEQd6/1"))
+def generate_quiz(path: str, nq: int):
+    # Read from previously stored index
+    persist_dir = Path(path) / "index"
+
+    # rebuild storage context
+    storage_context = StorageContext.from_defaults(persist_dir=str(persist_dir))
+
+    # load index
+    index = load_index_from_storage(storage_context)
+    query_engine = index.as_query_engine()
+    response = query_engine.query(
+            f'''
+            Create a list of multiple choice questions with the quetion on one line and the four
+            options and the correct option on the second line. I don't want any text
+            decorations. Generate at least ten such question. The questions may repeat. Make sure that the
+            output is easy to parse by a computer and has no text decorators. I also need the answer to the questions.
+            '''
+    )
+    quiz_strings = str(response).split("\n\n")
+    quiz_list = []
+    print(quiz_strings)
+    for combined_string in quiz_strings:
+        if combined_string != "":
+            seperated_string = combined_string.split("\n")
+            print(seperated_string)
+            question = seperated_string[0].split(".")[1]
+            option_a = seperated_string[1]
+            option_b = seperated_string[2]
+            option_c = seperated_string[3]
+            option_d = seperated_string[4]
+            correct_answer = seperated_string[5]
+            quiz_list.append([question, option_a, option_b, option_c, option_d, correct_answer])
+
+    return quiz_list
