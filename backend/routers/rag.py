@@ -63,8 +63,8 @@ def summarise(chat_id: str, security: dict[str, str] = Security(auth.verify)):
     return response
 
 @router.get("/generate_quiz/{chat_id}/")
-def generate_a_quiz(chat_id: str, nq: int, security: dict[str, str] = Security(auth.verify)):
+def generate_a_quiz(chat_id: str, security: dict[str, str] = Security(auth.verify)):
     user_id = security["sub"].split("@")[0]
     user_dir = Path(UPLOAD_DIR) / str(user_id) / str(chat_id) 
-    quiz = generate_quiz(str(user_dir), nq)
+    quiz = generate_quiz(str(user_dir))
     return quiz

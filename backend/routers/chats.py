@@ -1,4 +1,3 @@
-import os
 from fastapi import APIRouter, Security, Depends, HTTPException
 from auth0.utils import VerifyToken
 from sqlalchemy import create_engine, delete

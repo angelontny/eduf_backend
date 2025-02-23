@@ -5,6 +5,10 @@ from llama_index.embeddings.cohere import CohereEmbedding
 from pathlib import Path
 from llama_core.config import get_settings
 import os
+from models.model import Flash
+
+# Attempt at structured outputs
+# from pydantic_model import FlashCards
 
 # ------Hugging Face API----------
 # from llama_index.llms.huggingface_api import HuggingFaceInferenceAPI
@@ -35,6 +39,7 @@ Settings.llm = Cohere(
     model="command-r",
     api_key=token,
 )
+# .as_structured_llm(output_cls=FlashCards)
 
 def ingest(path: str):
     # Folder to persistently store the created index
@@ -76,11 +81,12 @@ def generate_cards(path: str):
     query_engine = index.as_query_engine()
     response = query_engine.query(
             '''Generate a very very comprehensive list of question and answer pair accompanied by a topic from all the given information.
-            The output should be in the format topic, question and answer. The topic, question and answer should be separated by
-            a ":" between them and should be in the same line. I don't need any additional text formatting just the topic, question and answer.
+            The output should be in the format topic, question and answer. The question should come before the answer.
+            The topic, question and answer should be separated by a ":" between them and should be in the same line. I don't need any
+            additional text formatting just the topic, question and answer.
             '''
     )
-    # print(response)
+    print(response)
     flash_card_strings = str(response).split("\n")
     flash_card_list = []
     for combined_string in flash_card_strings:
@@ -93,7 +99,7 @@ def generate_cards(path: str):
 
     return flash_card_list
 
-def generate_quiz(path: str, nq: int):
+def generate_quiz(path: str):
     # Read from previously stored index
     persist_dir = Path(path) / "index"
 
