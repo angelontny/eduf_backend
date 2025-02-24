@@ -4,8 +4,6 @@ from auth0.utils import VerifyToken
 from routers import files, chats, rag
 
 origins = [
-    "http://localhost.tiangolo.com",
-    "https://localhost.tiangolo.com",
     "http://localhost",
     "http://localhost:3000",
 ]
