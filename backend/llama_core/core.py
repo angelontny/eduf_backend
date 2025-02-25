@@ -26,10 +26,8 @@ from llama_core.pydantic_model import FlashCards, QAS
 # ).as_structured_llm(FlashCards)
 
 
-# ------- COHERE API ---------------
+# Cohere is used only for the embeddings
 cohere_token = get_settings().cohere_key
-
-# Text Splitter configuration
 text_splitter = SentenceSplitter(chunk_size=512, chunk_overlap=50)
 Settings.text_splitter = text_splitter
 
@@ -38,12 +36,6 @@ Settings.embed_model = CohereEmbedding(
         model_name="embed-english-v3.0",
         input_type="search_document"
 )
-#
-# Settings.llm = Cohere(
-#     model="command-r",
-#     api_key=token,
-# )
-# .as_structured_llm(output_cls=FlashCards)
 
 groq_token = get_settings().groq_key
 
