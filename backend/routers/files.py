@@ -53,10 +53,10 @@ async def upload_file(chat_id: int, files: list[UploadFile] = File(...), db: Ses
 
     ## Generate flash cards
     ingest(str(user_dir))
-    flash_cards = generate_cards(str(user_dir))
+    flash_cards = generate_cards(str(user_dir), 25)
 
     for i in flash_cards:
-        card = Flash(user_id=user_id, chat_id=chat_id, topic_name=i[0], question=i[1], answer=i[2])
+        card = Flash(user_id=user_id, chat_id=chat_id, topic_name=i["topic"], question=i["question"], answer=i["answer"])
         db.add(card)
         db.commit()
         db.refresh(card)
