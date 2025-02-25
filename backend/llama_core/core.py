@@ -3,12 +3,14 @@ from llama_index.core.node_parser import SentenceSplitter
 from llama_index.llms.cohere import Cohere
 from llama_index.embeddings.cohere import CohereEmbedding
 from pathlib import Path
-from llama_core.config import get_settings
+from config import get_settings
 import os
+from models import model
 from models.model import Flash
+from llama_index.llms.groq import Groq
+from pydantic_model import FlashCards
 
 # Attempt at structured outputs
-# from pydantic_model import FlashCards
 
 # ------Hugging Face API----------
 # from llama_index.llms.huggingface_api import HuggingFaceInferenceAPI
@@ -23,23 +25,33 @@ from models.model import Flash
 #     model_name="HuggingFaceH4/zephyr-7b-alpha", token=token
 # ).as_structured_llm(FlashCards)
 
-token = get_settings().cohere_key
+
+# ------- COHERE API ---------------
+cohere_token = get_settings().cohere_key
 
 # Text Splitter configuration
 text_splitter = SentenceSplitter(chunk_size=512, chunk_overlap=50)
 Settings.text_splitter = text_splitter
 
 Settings.embed_model = CohereEmbedding(
-        cohere_api_key=token,
+        cohere_api_key=cohere_token,
         model_name="embed-english-v3.0",
         input_type="search_document"
 )
-
-Settings.llm = Cohere(
-    model="command-r",
-    api_key=token,
-)
+#
+# Settings.llm = Cohere(
+#     model="command-r",
+#     api_key=token,
+# )
 # .as_structured_llm(output_cls=FlashCards)
+
+groq_token = get_settings().groq_key
+
+Settings.llm = Groq(
+        model="gemma2-9b-it",
+        api_key=groq_token
+).as_structured_llm(FlashCards)
+
 
 def ingest(path: str):
     # Folder to persistently store the created index

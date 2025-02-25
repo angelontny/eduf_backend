@@ -7,6 +7,7 @@ load_dotenv()
 class Settings(BaseSettings):
     hugging_face_token: str | None = None
     cohere_key: str | None = None
+    groq_key: str | None = None
     class Config:
         env_file = ".env"
 

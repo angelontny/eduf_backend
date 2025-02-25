@@ -116,6 +116,7 @@ dependencies = [
     { name = "llama-index-embeddings-huggingface" },
     { name = "llama-index-embeddings-huggingface-api" },
     { name = "llama-index-llms-cohere" },
+    { name = "llama-index-llms-groq" },
     { name = "llama-index-llms-huggingface-api" },
     { name = "pydantic-settings" },
     { name = "pyjwt", extra = ["crypto"] },
@@ -132,6 +133,7 @@ requires-dist = [
     { name = "llama-index-embeddings-huggingface", specifier = ">=0.5.1" },
     { name = "llama-index-embeddings-huggingface-api", specifier = ">=0.3.0" },
     { name = "llama-index-llms-cohere", specifier = ">=0.4.0" },
+    { name = "llama-index-llms-groq", specifier = ">=0.3.1" },
     { name = "llama-index-llms-huggingface-api", specifier = ">=0.3.1" },
     { name = "pydantic-settings", specifier = ">=2.7.1" },
     { name = "pyjwt", extras = ["crypto"], specifier = ">=2.10.1" },
@@ -883,6 +885,19 @@ wheels = [
 ]
 
 [[package]]
+name = "llama-index-llms-groq"
+version = "0.3.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "llama-index-core" },
+    { name = "llama-index-llms-openai-like" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a0/3a/01079b77383cb63c298a80c7ac35b2825e0972d84b7d6fa78f147751bd1d/llama_index_llms_groq-0.3.1.tar.gz", hash = "sha256:19ae6aacd478faa67c5a46e135a07d6092abe97744c4527b3d6e7ff4296fe51c", size = 2680 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/bd/f6/45f10285751524a7fec3f235b92a34a8d376a310d1e8595ae72380cccafe/llama_index_llms_groq-0.3.1-py3-none-any.whl", hash = "sha256:c5922ba838ebdd92f4eb3f0cec76c66d744545598386b99575427e0f81bd54b4", size = 2879 },
+]
+
+[[package]]
 name = "llama-index-llms-huggingface-api"
 version = "0.3.1"
 source = { registry = "https://pypi.org/simple" }
@@ -906,6 +921,20 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/86/15/590b46620b5a63612baca66031f8200eedde07f235854898974a36f0c90b/llama_index_llms_openai-0.3.20.tar.gz", hash = "sha256:21f19c76a7241321e546f8c565a1ccbd4035ebfb39e8de6c9d83d705282619d4", size = 15108 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/f2/be/45d29453988feec6c14c2ca01c9fc8f38142d744ab4a5a030e458c58ae1f/llama_index_llms_openai-0.3.20-py3-none-any.whl", hash = "sha256:45bb71197ec990cb67d2ea99287572d4575279fcefc77f5b7cfbaa4d467dc6c9", size = 15387 },
+]
+
+[[package]]
+name = "llama-index-llms-openai-like"
+version = "0.3.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "llama-index-core" },
+    { name = "llama-index-llms-openai" },
+    { name = "transformers" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/04/eb/addc5f02540c0cc60221dc53c224a49a7ecee4cdc417c4db4f5dc42ab0b9/llama_index_llms_openai_like-0.3.3.tar.gz", hash = "sha256:bea042017291d933ac93a0c487c8daad25a70e6f6bf2a5440150f6c18b246df6", size = 2893 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/14/15/90d8902cba0bddcc6a9f774fc370ed9f995354a8c0c5427e8d87bf89a819/llama_index_llms_openai_like-0.3.3-py3-none-any.whl", hash = "sha256:20051625720053e5d511d3771affee17b5373cc055b86ecbfc267c631c2dc406", size = 3132 },
 ]
 
 [[package]]
