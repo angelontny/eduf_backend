@@ -39,10 +39,6 @@ Settings.embed_model = CohereEmbedding(
 
 groq_token = get_settings().groq_key
 
-Settings.llm = Groq(
-        model="gemma2-9b-it",
-        api_key=groq_token
-).as_structured_llm(FlashCards)
 
 
 def ingest(path: str):
@@ -67,6 +63,10 @@ def query(path: str, question: str):
     # rebuild storage context
     storage_context = StorageContext.from_defaults(persist_dir=str(persist_dir))
 
+    Settings.llm = Groq(
+            model="gemma2-9b-it",
+            api_key=groq_token
+    )
     # load index
     index = load_index_from_storage(storage_context)
     query_engine = index.as_query_engine()
@@ -76,6 +76,11 @@ def query(path: str, question: str):
 def generate_cards(path: str, nc: int):
     # Read from previously stored index
     persist_dir = Path(path) / "index"
+
+    Settings.llm = Groq(
+            model="gemma2-9b-it",
+            api_key=groq_token
+    ).as_structured_llm(FlashCards)
 
     # rebuild storage context
     storage_context = StorageContext.from_defaults(persist_dir=str(persist_dir))
