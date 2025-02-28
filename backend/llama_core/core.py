@@ -14,14 +14,15 @@ groq_token = get_settings().groq_key
 text_splitter = SentenceSplitter(chunk_size=512, chunk_overlap=50)
 Settings.text_splitter = text_splitter
 
+Settings.embed_model = CohereEmbedding(
+        cohere_api_key=cohere_token,
+        model_name="embed-english-v3.0",
+        input_type="search_document"
+)
+
 def ingest(path: str):
     ''' Creates the index from the files contained in the folder '''
 
-    Settings.embed_model = CohereEmbedding(
-            cohere_api_key=cohere_token,
-            model_name="embed-english-v3.0",
-            input_type="search_document"
-    )
 
     # Folder to persistently store the created index
     persist_dir = Path(path) / "index"
